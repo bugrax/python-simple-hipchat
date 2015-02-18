@@ -10,12 +10,14 @@ import json
 import requests
 import os
 
-API_URL_DEFAULT = 'https://api.hipchat.com/v2/'
+API_URL_V1 = 'https://api.hipchat.com/v1/'
+API_URL_V2 = 'https://api.hipchat.com/v2/'
+
 FORMAT_DEFAULT = 'json'
 
 
 class HipChat(object):
-    def __init__(self, token=None, url=API_URL_DEFAULT, format=FORMAT_DEFAULT):
+    def __init__(self, token=None, url=API_URL_V1, format=FORMAT_DEFAULT):
         self.url = url
         self.token = token
         self.format = format
@@ -69,7 +71,7 @@ class HipChat(object):
         if len(message) > 1000:
             raise ValueError('Message too long')
 
-        url = "{0}/room/{1}/share/file".format(API_URL_DEFAULT, room_id)
+        url = "{0}/room/{1}/share/file".format(API_URL_V2, room_id)
         headers = {'Content-type': 'multipart/related; boundary=boundary123456',\
                    'Authorization': "Bearer " + self.token}
         msg = json.dumps({'message': message, 'from': 'Ceren Sahin'})
@@ -94,9 +96,6 @@ class HipChat(object):
 
     def list_users(self):
         return self.method('users/list')
-
-    def get_latest_message(self, room_id, parameters=None):
-        return self.method("room/%s/history/latest" % room_id, parameters=None)
 
     def message_room(self, room_id='', message_from='', message='', message_format='text', color='', notify=False):
         parameters = dict()
