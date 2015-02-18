@@ -2,13 +2,13 @@ from setuptools import setup
 
 
 setup(
-    description="Easy peasy wrapper for HipChat's v1 API",
+    description="Easy peasy wrapper for HipChat's v2 API",
     name='python-simple-hipchat',
-    url='https://github.com/kurttheviking/python-simple-hipchat',
-    version='0.3.3',
+    url='https://github.com/bugrax/python-simple-hipchat',
+    version='0.1.0',
     packages=['hipchat'],
-    author='Kurt Ericson',
-    author_email='kurttheviking@outlook.com',
+    author='Bugra Cakmak',
+    author_email='bugracakmak@gmail.com',
     license='MIT',
     long_description=open('README.rst').read(),
     classifiers=[
@@ -20,5 +20,5 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: Implementation :: CPython',
-    ],
+    ], requires=['requests']
 )

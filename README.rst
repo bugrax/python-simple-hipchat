@@ -4,13 +4,13 @@
 Description
 -----------
 
-Easy peasy wrapper for the `HipChat API v1 <https://www.hipchat.com/docs/api>`_. Exposes core URI endpoint wrapper and some basic methods for common integrations.
+Easy peasy wrapper for the `HipChat API v2 <https://www.hipchat.com/docs/api>`_. Exposes core URI endpoint wrapper and some basic methods for common integrations.
 
 
 Dependencies
 ------------
 None beyond the Python standard library.
-
+Requests library
 
 Usage
 -----
@@ -57,6 +57,28 @@ To send a message to a room, either a Notification or Admin token can be used. A
     # notify users in the room
     message_color = 'red'
     hipster.message_room(room_id, from_name, message, color=message_color, notify=True)
+
+
+**Send a file to a room**::
+
+    room_id = 8675309
+    file_path = '/home/bugrax/file.txt'
+    message = 'Test File'
+
+    hipster.send_file_room(room_id, message, file_path)
+
+
+
+**Send a file to a room**::
+
+    room_id = 8675309
+
+    parameters={'max-results':100}
+
+    hipster.get_latest_message(self, room_id, parameters=None)
+
+
+
 
 **List rooms**::
  

@@ -7,9 +7,10 @@ except ImportError:
     from urllib import urlencode
     import urllib2 as urlrequest
 import json
+import requests
+import os
 
-
-API_URL_DEFAULT = 'https://api.hipchat.com/v1/'
+API_URL_DEFAULT = 'https://api.hipchat.com/v2/'
 FORMAT_DEFAULT = 'json'
 
 
@@ -61,11 +62,41 @@ class HipChat(object):
 
         return json.loads(response.decode('utf-8'))
 
+    def send_file_room(self, room_id, message, file_path):
+
+        if not os.path.isfile(file_path):
+            raise ValueError("File '{0}' does not exist".format(file_path))
+        if len(message) > 1000:
+            raise ValueError('Message too long')
+
+        url = "{0}/room/{1}/share/file".format(API_URL_DEFAULT, room_id)
+        headers = {'Content-type': 'multipart/related; boundary=boundary123456',\
+                   'Authorization': "Bearer " + self.token}
+        msg = json.dumps({'message': message, 'from': 'Ceren Sahin'})
+        payload = ("\n"
+                   "--boundary123456\n"
+                   "Content-Type: application/json; charset=UTF-8\n"
+                   "Content-Disposition: attachment; name=\"metadata\"\n"
+                   "\n"
+                   "{0}\n"
+                   "--boundary123456\n"
+                   "Content-Disposition: attachment; name=\"file\"; filename=\"{1}\"\n"
+                   "\n"
+                   "{2}\n"
+                   "--boundary123456--\n"
+        ).format(msg, os.path.basename(file_path), open(file_path, 'rb').read())
+
+        r = requests.post(url, headers=headers, data=payload)
+        r.raise_for_status()
+
     def list_rooms(self):
         return self.method('rooms/list')
 
     def list_users(self):
         return self.method('users/list')
+
+    def get_latest_message(self, room_id, parameters=None):
+        return self.method("room/%s/history/latest" % room_id, parameters=None)
 
     def message_room(self, room_id='', message_from='', message='', message_format='text', color='', notify=False):
         parameters = dict()
@@ -87,7 +118,7 @@ class HipChat(object):
         for x in range(0, len(rooms)):
             if rooms[x]['name'] == room_name:
                 return rooms[x]
-        return None 
+        return None
 
     def find_user(self, user_name=''):
         users = self.list_users()['users']
